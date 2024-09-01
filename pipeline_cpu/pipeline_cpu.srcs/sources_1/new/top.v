@@ -162,7 +162,6 @@ module top(
     // mem/wb instacing
     mem_wb  mem_wb0(
         .CLK(CLK),  .RST(RST),
-
         // infos from mem
         .mem_wd(mem_wd_o),  .mem_wreg(mem_wreg_o),
         .mem_wdata(mem_wdata_o),

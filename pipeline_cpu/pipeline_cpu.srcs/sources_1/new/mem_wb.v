@@ -23,7 +23,7 @@ module mem_wb(
     );
 
     always @ (posedge   CLK) begin
-        if(RST == `NOPRegAddr)  begin
+        if(RST == `RstEnable)  begin
             wb_wd   <=  `NOPRegAddr;
             wb_wreg <=  `WriteDisable;
             wb_wdata    <=  `ZeroWord;

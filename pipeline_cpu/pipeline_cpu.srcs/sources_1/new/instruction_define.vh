@@ -49,8 +49,6 @@
 `define ChipDisable 1'b0 // 芯片禁止
 
 
-
-
 `define AddrWidth 32  //地址的位数（二进制）
 `define InstWidth 32   //MIPS指令位数（二进制）
 `define ZeroWord         32'h00000000 //32位的数值0

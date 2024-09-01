@@ -76,6 +76,8 @@ module id(
                 // sub alu is 'or'
                 alusel_o    <=  `EXE_RES_LOGIC;
                 
+                aluop_o <=  `EXE_OR_OP;
+                
                 // need read reg port 1
                 reg1_read_o <=  1'b1;
                 
