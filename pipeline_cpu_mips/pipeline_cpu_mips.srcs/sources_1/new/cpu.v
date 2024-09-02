@@ -69,9 +69,20 @@ module cpu(
     wire    stall_from_id;
     wire    stall_from_ex;
 
+    // branch infos
+    wire    id_is_in_delayslot_o;
+    wire[`RegBusWidth - 1 :0] id_link_address_o;
+    wire    ex_is_in_delayslot_o;
+    wire[`RegBusWidth - 1 :0] ex_link_address_i;
+    wire    is_in_delayslot_i;
+    wire    is_in_delayslot_o;
+    wire    next_inst_in_delayslot_o;
+    wire    id_branch_flag_o;
+    wire[`RegBusWidth - 1:0]    branch_target_address;
     // pc_reg instancing
     pc_reg  pc_reg0(
-        .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o), .stall(stall)
+        .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o), .stall(stall),
+        .branch_flag_i(id_branch_flag_o),   .branch_target_address_i(branch_target_address)
     );
 
     assign  rom_addr_o  = pc;   // 
@@ -106,7 +117,11 @@ module cpu(
         .aluop_o(id_aluop_o),   .alusel_o(id_alusel_o),
         .reg1_o(id_reg1_o), .reg2_o(id_reg2_o), // data (source number which will be used later)
         .wd_o(id_wd_o), .wreg_o(id_wreg_o),
-        .stall_from_id_o(stall_from_id)
+        .stall_from_id_o(stall_from_id),
+
+        .is_in_delayslot_i(is_in_delayslot_i),  .next_inst_in_delayslot_o(next_inst_in_delayslot_o),
+        .branch_flag_o(id_branch_flag_o),   .branch_target_address_o(branch_target_address),
+        .link_addr_o(id_link_address_o),    .is_in_delayslot_o(id_is_in_delayslot_o)
     );
 
     // Regfile instancing
@@ -131,7 +146,13 @@ module cpu(
         // infos to ex module
         .ex_aluop(ex_aluop_i),  .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i),    .ex_reg2(ex_reg2_i),
-        .ex_wd(ex_wd_i),    .ex_wreg(ex_wreg_i), .stall(stall)
+        .ex_wd(ex_wd_i),    .ex_wreg(ex_wreg_i), 
+        .stall(stall),
+
+        .id_link_address(id_link_address_o),    .id_is_in_delayslot(id_is_in_delayslot_o),
+        .next_inst_in_delayslot_i(next_inst_in_delayslot_o),
+        .ex_link_address(ex_link_address_i),    .ex_is_in_delayslot(ex_is_in_delayslot_i),
+		.is_in_delayslot_o(is_in_delayslot_i)	
     );
 
     // ex instancing
@@ -145,7 +166,10 @@ module cpu(
 
         // infos to ex/mem
         .wd_o(ex_wd_o), .wreg_o(ex_wreg_o),
-        .wdata_o(ex_wdata_o), .stall_from_ex_o(stall_from_ex)
+        .wdata_o(ex_wdata_o), 
+        .stall_from_ex_o(stall_from_ex),
+        .link_address_i(ex_link_address_i),
+		.is_in_delayslot_i(ex_is_in_delayslot_i)	 
     );
 
     // ex/mem instancing

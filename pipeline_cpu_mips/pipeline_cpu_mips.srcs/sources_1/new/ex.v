@@ -17,11 +17,16 @@ module ex(
         input   wire[`RegAddrWidth - 1 :0] wd_i, // addr of dest reg
         input   wire    wreg_i, // write enable
 
+        // branch infos
+        //  return address
+        input   wire[`RegBusWidth - 1 :0]   link_address_i,
+        // is in delay slot?
+        input   wire    is_in_delayslot_i,
         // ex results
         output  reg[`RegAddrWidth - 1 :0]   wd_o, // final dest w_reg addr
         output  reg wreg_o, // write enable
         output  reg[`RegBusWidth - 1 :0]   wdata_o, // result to write 
-        output  reg stall_from_ex_o // stall request from ex-stage
+        output  wire stall_from_ex_o // stall request from ex-stage
         
     );
     // save logic calcu results
@@ -42,6 +47,8 @@ module ex(
 
     // overflow
         wire    overflow;   // record overflow 
+
+        assign stall_from_ex_o = `NotStop;
 
 /*********************************************************************************
 ****************  prepare for arithmetic op, compute some num ********************
@@ -80,7 +87,7 @@ module ex(
 ****************  assign for arthmeticres ******************
 ************************************************************/
         always @(*) begin
-            stall_from_ex_o <= `NotStop;
+            
             if(rst == `RstEnable) begin
                 arithmeticres   <= `ZeroWord;
             end else begin
@@ -249,6 +256,9 @@ module ex(
             end
             `EXE_RES_MUL: begin
                 wdata_o <=  mulres[31:0]; // mul, only save the low 32-bit   
+            end
+            `EXE_RES_JUMP_BRANCH:   begin
+                wdata_o <=  link_address_i;
             end
             default:    begin
                 wdata_o <=  `ZeroWord;
