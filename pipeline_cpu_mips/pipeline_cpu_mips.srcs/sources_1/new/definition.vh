@@ -20,6 +20,8 @@
 `define InstInvalid 1'b0    // inst is invalid
 `define ChipEnable  1'b1    // chip is able
 `define ChipDisable 1'b0    // chip is forbidden
+`define Stop    1'b1    // stop sign
+`define NotStop 1'b0    // not stop sign
 
 // num
 `define ZeroWord    32'h00000000    // 32-bit zero

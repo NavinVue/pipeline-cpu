@@ -17,6 +17,9 @@ module id_ex(
             input   wire[`RegAddrWidth - 1 : 0] id_wd, // dest w_reg addr
             input   wire    id_wreg,
             
+            // stall sign
+            input   wire[5:0]   stall,
+
             // infos to ex-stage
             output  reg[`AluOpBusWidth - 1 : 0] ex_aluop,  // alu op to ex-stage
             output  reg[`AluSelBusWidth - 1 : 0]    ex_alusel,  // alu sub op to ex-stage
@@ -34,7 +37,14 @@ module id_ex(
             ex_reg2 <=  `ZeroWord;
             ex_wd   <=  `NOPRegAddr;
             ex_wreg <=  `WriteDisable;
-        end else begin
+        end else if(stall[2] == `Stop && stall[3] == `NotStop) begin
+            ex_aluop    <=  `EXE_NOP_OP;
+            ex_alusel   <=  `EXE_RES_NOP;
+            ex_reg1 <=  `ZeroWord;
+            ex_reg2 <=  `ZeroWord;
+            ex_wd   <=  `NOPRegAddr;
+            ex_wreg <=  `WriteDisable;
+        end else if(stall[2] == `NotStop) begin
             ex_aluop    <=  id_aluop;
             ex_alusel   <=  id_alusel;
             ex_reg1 <=  id_reg1;

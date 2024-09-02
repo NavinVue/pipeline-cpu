@@ -5,13 +5,14 @@
 // input:
 // output:
 // author:  
+// coding: gbk, ÔÚ¸üÐÂ´úÂëÊ±£¬³öÏÖÁËÂÒÂë...
 
 module cpu(
         input   wire    clk,
         input   wire    rst,
 
-        input   wire[`RegBusWidth - 1:0]    rom_data_i, // ï¿½ï¿½ï¿½ï¿½ï¿½Ï´æ´¢ï¿½ï¿½È¡ï¿½Ãµï¿½Ö¸ï¿½ï¿½
-        output  wire[`RegBusWidth - 1:0]    rom_addr_o, // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Äµï¿½Ö·
+        input   wire[`RegBusWidth - 1:0]    rom_data_i, // inst addr
+        output  wire[`RegBusWidth - 1:0]    rom_addr_o, // 
         output  wire    rom_ce_o
     );
     // vars, connect if/id and id
@@ -63,18 +64,23 @@ module cpu(
     wire[`RegAddrWidth - 1:0]   reg1_addr;
     wire[`RegAddrWidth - 1:0]   reg2_addr;
 
+    // stall sign
+    wire[5:0]   stall;
+    wire    stall_from_id;
+    wire    stall_from_ex;
+
     // pc_reg instancing
     pc_reg  pc_reg0(
-        .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o)
+        .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o), .stall(stall)
     );
 
-    assign  rom_addr_o  = pc;   // Ö¸ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½pcï¿½ï¿½Öµ
+    assign  rom_addr_o  = pc;   // 
 
     // if/id instancing
     if_id   id_id0(
         .clk(clk),  .rst(rst),  .if_pc(pc),
         .if_inst(rom_data_i),   .id_pc(id_pc_i),
-        .id_inst(id_inst_i)
+        .id_inst(id_inst_i), .stall(stall)
     );
 
     // id instancing
@@ -99,7 +105,8 @@ module cpu(
         // infos to id/ex
         .aluop_o(id_aluop_o),   .alusel_o(id_alusel_o),
         .reg1_o(id_reg1_o), .reg2_o(id_reg2_o), // data (source number which will be used later)
-        .wd_o(id_wd_o), .wreg_o(id_wreg_o)
+        .wd_o(id_wd_o), .wreg_o(id_wreg_o),
+        .stall_from_id_o(stall_from_id)
     );
 
     // Regfile instancing
@@ -124,7 +131,7 @@ module cpu(
         // infos to ex module
         .ex_aluop(ex_aluop_i),  .ex_alusel(ex_alusel_i),
         .ex_reg1(ex_reg1_i),    .ex_reg2(ex_reg2_i),
-        .ex_wd(ex_wd_i),    .ex_wreg(ex_wreg_i)
+        .ex_wd(ex_wd_i),    .ex_wreg(ex_wreg_i), .stall(stall)
     );
 
     // ex instancing
@@ -138,7 +145,7 @@ module cpu(
 
         // infos to ex/mem
         .wd_o(ex_wd_o), .wreg_o(ex_wreg_o),
-        .wdata_o(ex_wdata_o)
+        .wdata_o(ex_wdata_o), .stall_from_ex_o(stall_from_ex)
     );
 
     // ex/mem instancing
@@ -151,7 +158,7 @@ module cpu(
 
         // infos to mem
         .mem_wd(mem_wd_i),  .mem_wreg(mem_wreg_i),
-        .mem_wdata(mem_wdata_i)
+        .mem_wdata(mem_wdata_i), .stall(stall)
     );
 
     // mem instancing
@@ -176,7 +183,14 @@ module cpu(
 
         // infos to wb
         .wb_wd(wb_wd_i),    .wb_wreg(wb_wreg_i),
-        .wb_wdata(wb_wdata_i)    
+        .wb_wdata(wb_wdata_i), .stall(stall)    
+    );
+
+    ctrl ctrl0(
+        .rst(rst),
+        .stall_from_id(stall_from_id),
+        .stall_from_ex(stall_from_ex),
+        .stall(stall)
     );
 
 endmodule

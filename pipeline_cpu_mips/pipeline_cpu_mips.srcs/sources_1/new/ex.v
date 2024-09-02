@@ -20,8 +20,8 @@ module ex(
         // ex results
         output  reg[`RegAddrWidth - 1 :0]   wd_o, // final dest w_reg addr
         output  reg wreg_o, // write enable
-        output  reg[`RegBusWidth - 1 :0]   wdata_o // result to write 
-        
+        output  reg[`RegBusWidth - 1 :0]   wdata_o, // result to write 
+        output  reg stall_from_ex_o // stall request from ex-stage
         
     );
     // save logic calcu results
@@ -80,6 +80,7 @@ module ex(
 ****************  assign for arthmeticres ******************
 ************************************************************/
         always @(*) begin
+            stall_from_ex_o <= `NotStop;
             if(rst == `RstEnable) begin
                 arithmeticres   <= `ZeroWord;
             end else begin

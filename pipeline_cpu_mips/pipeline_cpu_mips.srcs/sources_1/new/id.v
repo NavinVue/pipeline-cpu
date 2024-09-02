@@ -39,7 +39,8 @@ module id(
         output reg[`RegBusWidth - 1 :0] reg1_o, // decoder inst stage 
         output reg[`RegBusWidth - 1 :0] reg2_o, // decoder inst stage 
         output reg[`RegAddrWidth - 1 :0] wd_o, // addr of reg which will be written in decoder inst stage 
-        output reg  wreg_o // will reg be written in decoder inst stage
+        output reg  wreg_o, // will reg be written in decoder inst stage
+        output reg  stall_from_id_o // stall request from id
     );
     // get func op
     wire[5:0] op = inst_i[31:26];   // inst code
@@ -57,6 +58,7 @@ module id(
     1. decode inst
 ********************/
     always @ (*) begin
+        stall_from_id_o = `NotStop;
         if (rst == `RstEnable) begin
             aluop_o <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
