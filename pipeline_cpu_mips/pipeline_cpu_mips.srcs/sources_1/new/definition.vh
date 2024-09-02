@@ -22,6 +22,10 @@
 `define ChipDisable 1'b0    // chip is forbidden
 `define Stop    1'b1    // stop sign
 `define NotStop 1'b0    // not stop sign
+`define Branch  1'b1    // is branch
+`define NotBranch   1'b0    // is not branch  
+`define InDelaySlot 1'b1    // in delay slot 
+`define NotInDelaySlot  1'b0    // not in delay slot
 
 // num
 `define ZeroWord    32'h00000000    // 32-bit zero
@@ -76,6 +80,20 @@
 
 `define EXE_MUL  6'b000010
 
+`define EXE_J  6'b000010
+`define EXE_JAL  6'b000011
+`define EXE_JALR  6'b001001
+`define EXE_JR  6'b001000
+`define EXE_BEQ  6'b000100
+`define EXE_BGEZ  5'b00001
+`define EXE_BGEZAL  5'b10001
+`define EXE_BGTZ  6'b000111
+`define EXE_BLEZ  6'b000110
+`define EXE_BLTZ  5'b00000
+`define EXE_BLTZAL  5'b10000
+`define EXE_BNE  6'b000101
+
+
 //  AluOp, op kind
 `define EXE_AND_OP   8'b00100100
 `define EXE_OR_OP    8'b00100101
@@ -115,6 +133,20 @@
 `define EXE_MOVZ_OP  8'b00001010
 `define EXE_MOVN_OP  8'b00001011
 
+// j and b
+`define EXE_J_OP  8'b01001111
+`define EXE_JAL_OP  8'b01010000
+`define EXE_JALR_OP  8'b00001001
+`define EXE_JR_OP  8'b00001000
+`define EXE_BEQ_OP  8'b01010001
+`define EXE_BGEZ_OP  8'b01000001
+`define EXE_BGEZAL_OP  8'b01001011
+`define EXE_BGTZ_OP  8'b01010100
+`define EXE_BLEZ_OP  8'b01010011
+`define EXE_BLTZ_OP  8'b01000000
+`define EXE_BLTZAL_OP  8'b01001010
+`define EXE_BNE_OP  8'b01010010
+
 //  ALuSel, sub op kind
 `define EXE_RES_LOGIC 3'b001
 `define EXE_RES_SHIFT 3'b010
@@ -122,6 +154,7 @@
 `define EXE_RES_ARITHMETIC 3'b100	
 `define EXE_RES_NOP 3'b000
 `define EXE_RES_MUL 3'b101
+`define EXE_RES_JUMP_BRANCH 3'b110
 
 
 // regs
