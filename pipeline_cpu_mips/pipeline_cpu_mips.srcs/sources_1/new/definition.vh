@@ -1,10 +1,11 @@
 /*************************************************
 ******************** Macro Definitions ***********
 **************************************************/
+// coding: gbk
 
 // addr, inst
-`define InstAddrWidth 32 // æŒ‡ä»¤åœ°å€ä½æ•°ï¼ˆäºŒè¿›åˆ¶ï¼‰
-`define InstBusWidth 32 // æŒ‡ä»¤æ€»çº¿å®½åº¦ 32 bit
+`define InstAddrWidth 32 // Ö¸ÁîµØÖ·Î»Êı£¨¶ş½øÖÆ£©
+`define InstBusWidth 32 // Ö¸Áî×ÜÏß¿í¶È 32 bit
 `define InstMemNum  131071 // ROM size 128KB
 `define InstMemNumLog2  17 // log2(InstMemNum)
 
@@ -46,6 +47,20 @@
 `define EXE_SYNC  6'b001111
 `define EXE_PREF  6'b110011
 
+// arithmetic operation
+`define EXE_SLT  6'b101010
+`define EXE_SLTU  6'b101011
+`define EXE_SLTI  6'b001010
+`define EXE_SLTIU  6'b001011   
+`define EXE_ADD  6'b100000
+`define EXE_ADDU  6'b100001
+`define EXE_SUB  6'b100010
+`define EXE_SUBU  6'b100011
+`define EXE_ADDI  6'b001000
+`define EXE_ADDIU  6'b001001
+`define EXE_CLZ  6'b100000
+`define EXE_CLO  6'b100001
+
 // mov
 `define EXE_MOVZ    6'b001010
 `define EXE_MOVN    6'b001011
@@ -57,6 +72,7 @@
 `define EXE_REGIMM_INST 6'b000001
 `define EXE_SPECIAL2_INST 6'b011100 
 
+`define EXE_MUL  6'b000010
 
 //  AluOp, op kind
 `define EXE_AND_OP   8'b00100100
@@ -75,6 +91,22 @@
 `define EXE_SRA_OP  8'b00000011
 `define EXE_SRAV_OP  8'b00000111
 
+// arithmetic
+`define EXE_SLT_OP  8'b00101010
+`define EXE_SLTU_OP  8'b00101011
+`define EXE_SLTI_OP  8'b01010111
+`define EXE_SLTIU_OP  8'b01011000   
+`define EXE_ADD_OP  8'b00100000
+`define EXE_ADDU_OP  8'b00100001
+`define EXE_SUB_OP  8'b00100010
+`define EXE_SUBU_OP  8'b00100011
+`define EXE_ADDI_OP  8'b01010101
+`define EXE_ADDIU_OP  8'b01010110
+`define EXE_CLZ_OP  8'b10110000
+`define EXE_CLO_OP  8'b10110001
+
+`define EXE_MUL_OP  8'b10101001
+
 `define EXE_NOP_OP    8'b00000000
 
 // mov 
@@ -85,12 +117,15 @@
 `define EXE_RES_LOGIC 3'b001
 `define EXE_RES_SHIFT 3'b010
 `define EXE_RES_MOVE 3'b011
+`define EXE_RES_ARITHMETIC 3'b100	
 `define EXE_RES_NOP 3'b000
+`define EXE_RES_MUL 3'b101
 
 
 // regs
-`define RegAddrWidth 5 // 32ä¸ªå¯„å­˜å™¨, 5ä½åœ°å€
+`define RegAddrWidth 5 // 32¸ö¼Ä´æÆ÷, 5Î»µØÖ·
 `define RegBusWidth 32 // Reg bus width, 32-bit
-`define RegNum  32 // 32ä¸ªRegister
+`define DoubleRegBusWidth   64  // double regbuswidth, specially for mul op
+`define RegNum  32 // 32¸öRegister
 `define RegNumLog2 5 // log_2(32)=5,log_2(RegNum)
 `define NOPRegAddr 5'b00000
