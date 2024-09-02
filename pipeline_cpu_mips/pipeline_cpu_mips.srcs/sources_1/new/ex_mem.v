@@ -15,6 +15,9 @@ module ex_mem(
         input   wire    ex_wreg,    // write enavle
         input   wire[`RegBusWidth - 1:0]    ex_wdata,   // write data
 
+        // stall infos
+        input   wire[5:0]   stall,
+
         // infos to mem
         output  reg[`RegAddrWidth - 1:0]    mem_wd, // mem, write reg addr
         output  reg mem_wreg,    // mem-stage, write enable
@@ -26,7 +29,11 @@ module ex_mem(
             mem_wd  <=  `NOPRegAddr;
             mem_wreg    <=  `WriteDisable;
             mem_wdata   <=  `ZeroWord;
-        end else begin
+        end else if (stall[3] == `Stop && stall[4] == `NotStop) begin
+            mem_wd  <=  `NOPRegAddr;
+            mem_wreg    <=  `WriteDisable;
+            mem_wdata   <=  `ZeroWord;
+        end else if (stall[3] == `NotStop) begin
             mem_wd  <=  ex_wd;
             mem_wreg    <=  ex_wreg;
             mem_wdata   <=  ex_wdata;
