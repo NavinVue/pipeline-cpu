@@ -149,6 +149,29 @@ module id(
                                     reg2_read_o <=  1'b1;
                                     instvalid   <=  `InstValid;
                                 end
+                                `EXE_MOVN:  begin   // movn
+                                    aluop_o <=  `EXE_MOVN_OP;
+                                    alusel_o    <=  `EXE_RES_MOVE;
+                                    reg1_read_o <=  1'b1;
+                                    reg2_read_o <=  1'b1;
+                                    instvalid   <=  `InstValid;
+                                    if (reg2_o  != `ZeroWord) begin
+                                        wreg_o  <=  `WriteEnable;
+                                    end else begin
+                                        wreg_o  <=  `WriteDisable;
+                                    end
+                                end
+                                `EXE_MOVZ:  begin   // movz
+                                    aluop_o <=  `EXE_MOVZ_OP;
+                                    alusel_o    <=  `EXE_RES_MOVE;
+                                    reg1_read_o <=  1'b1;
+                                    reg2_read_o <=  1'b1;
+                                    if(reg2_o == `ZeroWord) begin
+                                        wreg_o  <=  `WriteEnable;
+                                    end  else begin
+                                        wreg_o  <=  `WriteDisable;
+                                    end
+                                end
                                 default:    begin
                                 end
                             endcase

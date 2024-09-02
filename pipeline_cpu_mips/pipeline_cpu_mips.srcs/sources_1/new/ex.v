@@ -25,8 +25,9 @@ module ex(
         
     );
     // save logic calcu results
-        reg[`RegBusWidth - 1 :0]   logicout; // result of logic compute
-        reg[`RegBusWidth - 1 :0]   shiftres; // result of shift compute 
+        reg[`RegBusWidth - 1 :0]    logicout; // result of logic compute
+        reg[`RegBusWidth - 1 :0]    shiftres; // result of shift compute 
+        reg[`RegBusWidth - 1 :0]    moveres;     // results of move
 /***********************
 *******   1. calcu according to alu op ��now only logic or�� *******
 ***********************/
@@ -78,6 +79,25 @@ module ex(
         
     end
 
+// move compute
+    always @(*) begin
+        if(rst == `RstEnable) begin
+            moveres <=  `ZeroWord;
+        end else begin
+            moveres <=  `ZeroWord;
+            case (aluop_i)
+                `EXE_MOVZ_OP:   begin
+                    moveres <=  reg1_i;
+                end
+                `EXE_MOVN_OP:   begin
+                    moveres <=  reg1_i;
+                end
+                default:    begin
+                end
+            endcase
+        end
+    end
+
 /************************
 **** 2. according to alusel_i, choose result (here only logicout) ****
 *************************/
@@ -91,6 +111,9 @@ module ex(
             end
             `EXE_RES_SHIFT: begin
                 wdata_o <=  shiftres; // choose shift res as wdata
+            end
+            `EXE_RES_MOVE:  begin
+                wdata_o <=  moveres;
             end
             default:    begin
                 wdata_o <=  `ZeroWord;

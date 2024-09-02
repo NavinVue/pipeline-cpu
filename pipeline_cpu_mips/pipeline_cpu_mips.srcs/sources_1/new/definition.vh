@@ -46,6 +46,10 @@
 `define EXE_SYNC  6'b001111
 `define EXE_PREF  6'b110011
 
+// mov
+`define EXE_MOVZ    6'b001010
+`define EXE_MOVN    6'b001011
+
 `define EXE_NOP 6'b000000
 `define SSNOP 32'b00000000000000000000000001000000
 
@@ -73,10 +77,14 @@
 
 `define EXE_NOP_OP    8'b00000000
 
+// mov 
+`define EXE_MOVZ_OP  8'b00001010
+`define EXE_MOVN_OP  8'b00001011
+
 //  ALuSel, sub op kind
 `define EXE_RES_LOGIC 3'b001
 `define EXE_RES_SHIFT 3'b010
-
+`define EXE_RES_MOVE 3'b011
 `define EXE_RES_NOP 3'b000
 
 
