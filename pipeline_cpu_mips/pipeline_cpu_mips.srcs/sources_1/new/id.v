@@ -554,7 +554,7 @@ module id(
                             alusel_o    <=  `EXE_RES_JUMP_BRANCH;
                             reg1_read_o <=  1'b1;
                             reg2_read_o <=  1'b0;
-                            link_addr_o <=  pc_plus_8;
+                            link_addr_o <=  pc_plus_4;
                             wd_o    <=  5'b11111; // $31 reg
                             instvalid   <=  `InstValid;
                             if(reg1_o[31] == 1'b0)  begin
