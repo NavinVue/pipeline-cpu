@@ -25,6 +25,11 @@ module id_ex(
             input   wire    id_is_in_delayslot,
             input   wire    next_inst_in_delayslot_i,
 
+            // inst infos
+            input   wire[`RegBusWidth - 1 :0]   id_inst,    // inst from id
+
+            output  reg[`RegBusWidth - 1 :0]   ex_inst,    // inst info to ex   
+
             output  reg[`RegBusWidth - 1 : 0]   ex_link_address,
             output  reg ex_is_in_delayslot,
             output  reg is_in_delayslot_o,
@@ -63,6 +68,7 @@ module id_ex(
             ex_link_address <=  id_link_address;
             ex_is_in_delayslot  <=  id_is_in_delayslot;
             is_in_delayslot_o   <=  next_inst_in_delayslot_i;
+            ex_inst <=  id_inst;
         end
     end
     

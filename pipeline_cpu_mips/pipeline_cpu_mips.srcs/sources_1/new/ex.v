@@ -22,6 +22,13 @@ module ex(
         input   wire[`RegBusWidth - 1 :0]   link_address_i,
         // is in delay slot?
         input   wire    is_in_delayslot_i,
+
+        // inst infos
+        input   wire[`RegBusWidth - 1 :0]   inst_i,
+        output  wire[`AluOpBusWidth - 1 :0] aluop_o,
+        output  wire[`RegBusWidth - 1 :0]   mem_addr_o,
+        output  wire[`RegBusWidth - 1 :0]   reg2_o,
+
         // ex results
         output  reg[`RegAddrWidth - 1 :0]   wd_o, // final dest w_reg addr
         output  reg wreg_o, // write enable
@@ -82,6 +89,13 @@ module ex(
                         (reg1_i < reg2_i);
     // reverse-bit
         assign reg1_i_not = ~reg1_i;
+
+    // load store
+    assign  aluop_o =   aluop_i;
+    //  addr
+    assign  mem_addr_o  = reg1_i + {{16{inst_i[15]}}, inst_i[15:0]};
+    // data
+    assign  reg2_o  =   reg2_i;
 
 /***********************************************************
 ****************  assign for arthmeticres ******************

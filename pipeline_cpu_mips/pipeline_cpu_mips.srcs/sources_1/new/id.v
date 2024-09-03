@@ -29,6 +29,9 @@ module id(
 
         input   wire    is_in_delayslot_i,
 
+        // load store
+        // input   wire[`AluOpBusWidth - 1:0]  ex_aluop_i,  
+
         output  reg next_inst_in_delayslot_o,
         output  reg branch_flag_o,
         output  reg[`RegBusWidth - 1 :0]    branch_target_address_o,
@@ -48,7 +51,10 @@ module id(
         output  reg[`RegBusWidth - 1 :0]    reg2_o, // decoder inst stage 
         output  reg[`RegAddrWidth - 1 :0]   wd_o, // addr of reg which will be written in decoder inst stage 
         output  reg wreg_o, // will reg be written in decoder inst stage
-        output  wire stall_from_id_o // stall request from id
+        output  wire stall_from_id_o, // stall request from id
+
+        // inst_o, transfer inst
+        output  wire[`RegBusWidth - 1 :0]   inst_o
     );
     // get func op
     wire[5:0] op = inst_i[31:26];   // inst code
@@ -72,6 +78,10 @@ module id(
     reg instvalid;
     
     assign  stall_from_id_o = `NotStop;
+
+    // pass inst
+    assign  inst_o  = inst_i;
+
 /*******************
     1. decode inst
 ********************/
@@ -108,7 +118,7 @@ module id(
             branch_flag_o   <=  `NotBranch;
             next_inst_in_delayslot_o    <=  `NotInDelaySlot;
             case (op)
-                `EXE_SPECIAL_INST: begin // inst code is special, ref: ¡¶×Ô¼º¶¯ÊÖÐ´CPU¡· screen-shot https://navinvue.oss-cn-beijing.aliyuncs.com/202409021322157.png
+                `EXE_SPECIAL_INST: begin // inst code is special, ref: ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Ð´CPUï¿½ï¿½ screen-shot https://navinvue.oss-cn-beijing.aliyuncs.com/202409021322157.png
                     case (op2)
                         5'b00000:   begin
                             case(op3)
@@ -333,14 +343,6 @@ module id(
                         // not valid func
                     end
                 end
-                // `EXE_PREF:  begin   // pref
-                //     wreg_o  <=  `WriteDisable;
-                //     aluop_o <=  `EXE_NOP_OP;
-                //     alusel_o    <=  `EXE_RES_NOP;
-                //     reg1_read_o <=  1'b0;
-                //     reg2_read_o <=  1'b0;
-                //     instvalid   <=  `InstValid;
-                // end
                 `EXE_ADDI:  begin   // addi
                     wreg_o  <=  `WriteEnable;
                     aluop_o <=  `EXE_ADDI_OP;
@@ -436,6 +438,23 @@ module id(
                         branch_flag_o   <=  `Branch;
                         next_inst_in_delayslot_o    <=  `InDelaySlot;
                     end
+                end
+                `EXE_LW:    begin
+                    wreg_o  <=  `WriteEnable;
+                    aluop_o <=  `EXE_LW_OP;
+                    alusel_o    <=  `EXE_RES_LOAD_STORE;
+                    reg1_read_o <=  1'b1;
+                    reg2_read_o <=  1'b0;
+                    wd_o    <=  inst_i[20:16];
+                    instvalid   <=  `InstValid;
+                end
+                `EXE_SW:    begin
+                    wreg_o  <=  `WriteDisable;
+                    aluop_o <=  `EXE_SW_OP;
+                    reg1_read_o <=  1'b1;
+                    reg2_read_o <=  1'b1;
+                    instvalid   <=  `InstValid;
+                    alusel_o    <=  `EXE_RES_LOAD_STORE;
                 end
                 `EXE_SPECIAL2_INST: begin
                     case (op3)
