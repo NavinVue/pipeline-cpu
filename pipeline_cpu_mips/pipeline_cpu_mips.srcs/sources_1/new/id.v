@@ -83,11 +83,11 @@ module id(
     reg stallreq_for_reg2_loadrelate;   //  if reg2 has load relate
     wire pre_inst_is_load; // if last inst is load inst?
     
-    assign  stall_from_id_o = `NotStop;
+    //assign  stall_from_id_o = `NotStop;
     // pass inst
     assign  inst_o  = inst_i;
     assign  pre_inst_is_load = (ex_aluop_i == `EXE_LW_OP) ? 1'b1 : 1'b0;
-    assign stallreq = stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate;
+    assign stall_from_id_o = stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate;
     assign  imm_sll2_signedext = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
     assign  pc_plus_4 = pc_i + 4;
     assign  pc_plus_8 = pc_i + 8;
