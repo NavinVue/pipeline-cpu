@@ -93,7 +93,7 @@ module cpu(
     // load store (new add)
     wire[`RegBusWidth - 1:0]    id_inst_o;
     wire[`RegBusWidth - 1:0]    ex_inst_o;
-    // wire[`AluOpBusWidth - 1:0]  ex_aluop_o;
+    wire[`AluOpBusWidth - 1:0]  ex_aluop_o;
     wire[`RegBusWidth - 1:0]    ex_inst_i;
     wire[`RegBusWidth - 1:0]    ex_mem_addr_o;
     wire[`RegBusWidth - 1:0]    ex_reg1_o;
@@ -122,7 +122,7 @@ module cpu(
     id id0(
         .rst(rst),  .pc_i(id_pc_i), .inst_i(id_inst_i),
 
-        // .ex_aluop_i(ex_aluop_o),
+        .ex_aluop_i(ex_aluop_o),
         // from regfile
         .reg1_data_i(reg1_data),    .reg2_data_i(reg2_data),
 
