@@ -29,11 +29,15 @@ module id(
 
         input   wire    is_in_delayslot_i,
 
+        //flush branch=true and j
+        input   wire    flush_j,  // flush when J-inst, new
+        input   wire    flush_b, // flush when branch=true, new
+
         // load store
         input   wire[`AluOpBusWidth - 1:0]  ex_aluop_i,  
 
-        output  reg next_inst_in_delayslot_o,
-        output  reg branch_flag_o,
+        output  reg next_inst_in_delayslot_o,   
+        output  reg branch_flag_o,  //new
         output  reg[`RegBusWidth - 1 :0]    branch_target_address_o,
         output  reg[`RegBusWidth - 1 :0]    link_addr_o, // the address will be written into reg
         output  reg is_in_delayslot_o,
@@ -52,6 +56,8 @@ module id(
         output  reg[`RegAddrWidth - 1 :0]   wd_o, // addr of reg which will be written in decoder inst stage 
         output  reg wreg_o, // will reg be written in decoder inst stage
         output  wire stall_from_id_o, // stall request from id
+
+        output  reg    J_inst,  // new
 
         // inst_o, transfer inst
         output  wire[`RegBusWidth - 1 :0]   inst_o
@@ -91,7 +97,7 @@ module id(
 ********************/
     always @ (*) begin
         
-        if (rst == `RstEnable) begin
+        if ((rst == `RstEnable) || ((is_in_delayslot_i) && (flush_b || flush_j) )) begin
             aluop_o <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
             wd_o    <= `NOPRegAddr;
@@ -106,6 +112,8 @@ module id(
             branch_target_address_o <=  `ZeroWord;
             branch_flag_o   <=  `NotBranch;
             next_inst_in_delayslot_o    <=  `NotInDelaySlot;
+            J_inst  <=  1'b0;
+
         end else begin
             aluop_o <= `EXE_NOP_OP;
             alusel_o    <= `EXE_RES_NOP;
@@ -121,6 +129,7 @@ module id(
             branch_target_address_o <=  `ZeroWord;
             branch_flag_o   <=  `NotBranch;
             next_inst_in_delayslot_o    <=  `NotInDelaySlot;
+            J_inst  <=  1'b0;
             case (op)
                 `EXE_SPECIAL_INST: begin // inst code is special, ref: ���Լ�����дCPU�� screen-shot https://navinvue.oss-cn-beijing.aliyuncs.com/202409021322157.png
                     case (op2)
@@ -272,6 +281,7 @@ module id(
                                     branch_flag_o   <=  `Branch;
                                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                                     instvalid   <=  `InstValid;
+                                    J_inst  <=  1'b1;
                                 end
                                 `EXE_JALR:  begin
                                     wreg_o  <=  `WriteEnable;
@@ -285,6 +295,7 @@ module id(
                                     branch_flag_o   <=  `Branch;
                                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                                     instvalid   <=  `InstValid;
+                                    J_inst  <=  1'b1;
                                 end
                                 default:    begin
                                 end
@@ -387,6 +398,7 @@ module id(
                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                     instvalid   <=  `InstValid;
                     branch_target_address_o <=  {pc_plus_4[31:28], inst_i[25:0], 2'b00};
+                    J_inst  <=  1'b1;
                 end
                 `EXE_JAL:begin
                     wreg_o  <=  `WriteEnable;
@@ -395,11 +407,12 @@ module id(
                     reg1_read_o <=  1'b0;
                     reg2_read_o <=  1'b0;
                     wd_o    <=  5'b11111;   // $31 reg
-                    link_addr_o <=  pc_plus_8;
+                    link_addr_o <=  pc_plus_4;
                     branch_flag_o   <=  `Branch;
                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                     instvalid   <=  `InstValid;
                     branch_target_address_o <=  {pc_plus_4[31:28], inst_i[25:0],2'b00};
+                    J_inst  <=  1'b1;
                 end
                 `EXE_BEQ:   begin
                     wreg_o  <=  `WriteDisable;

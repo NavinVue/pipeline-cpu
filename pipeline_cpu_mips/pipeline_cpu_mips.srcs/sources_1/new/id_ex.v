@@ -16,6 +16,8 @@ module id_ex(
             input   wire[`RegBusWidth - 1 : 0]  id_reg2, // source number 2
             input   wire[`RegAddrWidth - 1 : 0] id_wd, // dest w_reg addr
             input   wire    id_wreg,
+            input   wire    J_inst,
+            input   wire    branch_flag,
             
             // stall sign
             input   wire[5:0]   stall,
@@ -40,7 +42,9 @@ module id_ex(
             output  reg[`RegBusWidth - 1 : 0]   ex_reg1, //   source number 1
             output  reg[`RegBusWidth - 1 : 0]   ex_reg2, // source number 2
             output  reg[`RegAddrWidth - 1 : 0]  ex_wd,  // ex-stage, dest w_reg addr
-            output  reg ex_wreg // weathear need w_reg
+            output  reg ex_wreg, // weathear need w_regm
+            output  reg flush_b,
+            output  reg flush_j
     );
     
     always @ (posedge   clk) begin
@@ -53,6 +57,8 @@ module id_ex(
             ex_wreg <=  `WriteDisable;
             ex_link_address <= `ZeroWord;
 			ex_is_in_delayslot <= `NotInDelaySlot;
+            flush_b <=  1'b0;
+            flush_j <=  1'b0;
         end else if(stall[2] == `Stop && stall[3] == `NotStop) begin
             ex_aluop    <=  `EXE_NOP_OP;
             ex_alusel   <=  `EXE_RES_NOP;
@@ -62,6 +68,8 @@ module id_ex(
             ex_wreg <=  `WriteDisable;
             ex_link_address <= `ZeroWord;
 			ex_is_in_delayslot <= `NotInDelaySlot;
+            flush_b <=  1'b0;
+            flush_j <=  1'b0;
         end else if(stall[2] == `NotStop) begin
             ex_aluop    <=  id_aluop;
             ex_alusel   <=  id_alusel;
@@ -73,6 +81,8 @@ module id_ex(
             ex_is_in_delayslot  <=  id_is_in_delayslot;
             is_in_delayslot_o   <=  next_inst_in_delayslot_i;
             ex_inst <=  id_inst;
+            flush_b <=  branch_flag;
+            flush_j <=  J_inst;
         end
     end
     
