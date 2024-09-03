@@ -23,7 +23,7 @@ module test_bench(
     initial begin
         RST =   `RstEnable;
         #195    RST= `RstDisable;
-        #1000   $stop;
+        #4000   $stop;
     end
 
     // instance sopc

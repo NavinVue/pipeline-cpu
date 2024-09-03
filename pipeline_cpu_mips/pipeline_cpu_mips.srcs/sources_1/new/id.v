@@ -64,12 +64,8 @@ module id(
     
     wire[`RegBusWidth - 1 :0]   pc_plus_8;    //  pc + 8
     wire[`RegBusWidth - 1 :0]   pc_plus_4;    //  pc + 4
-    assign  pc_plus_4 = pc_i + 4;
-    assign  pc_plus_8 = pc_i + 8;
 
     wire[`RegBusWidth - 1 :0]   imm_sll2_signedext; // get addr according to offset
-    assign  imm_sll2_signedext = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
-
 
     // save imm that ex-inst will use
     reg[`RegBusWidth - 1 :0] imm;
@@ -77,16 +73,19 @@ module id(
     // weather inst valid
     reg instvalid;
     
-    assign  stall_from_id_o = `NotStop;
-
-    // pass inst
-    assign  inst_o  = inst_i;
-
     reg stallreq_for_reg1_loadrelate;   // if reg1 has load relate
     reg stallreq_for_reg2_loadrelate;   //  if reg2 has load relate
     wire pre_inst_is_load; // if last inst is load inst?
+    
+    assign  stall_from_id_o = `NotStop;
+    // pass inst
+    assign  inst_o  = inst_i;
     assign  pre_inst_is_load = (ex_aluop_i == `EXE_LW_OP) ? 1'b1 : 1'b0;
     assign stallreq = stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate;
+    assign  imm_sll2_signedext = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
+    assign  pc_plus_4 = pc_i + 4;
+    assign  pc_plus_8 = pc_i + 8;
+
 /*******************
     1. decode inst
 ********************/
@@ -240,7 +239,7 @@ module id(
                                 end
                                 `EXE_ADDU:  begin
                                     wreg_o  <=  `WriteEnable;
-                                    aluop_o <=  `EXE_ADDIU_OP;
+                                    aluop_o <=  `EXE_ADDU_OP;
                                     alusel_o    <=  `EXE_RES_ARITHMETIC;
                                     reg1_read_o <=  1'b1;
                                     reg2_read_o <=  1'b1;
@@ -279,7 +278,7 @@ module id(
                                     aluop_o <=  `EXE_JALR_OP;
                                     alusel_o    <=  `EXE_RES_JUMP_BRANCH;
                                     reg1_read_o <=  1'b1;
-                                    reg2_read_o <=  2'b0;
+                                    reg2_read_o <=  1'b0;
                                     wd_o    <=  inst_i[15:11];
                                     link_addr_o <=  pc_plus_8;
                                     branch_target_address_o <=  reg1_o;
@@ -335,8 +334,8 @@ module id(
                     instvalid   <=  `InstValid;
                 end
                 `EXE_LUI:   begin   // lui inst, {imm,16'h0}
-                    if(inst_i[25:21==5'b00000]) begin
-                        reg1_o  <=  `WriteEnable;
+                        wreg_o  <=  `WriteEnable;
+                        // reg1_o  <=  `WriteEnable;
                         aluop_o <=  `EXE_OR_OP;
                         alusel_o    <=  `EXE_RES_LOGIC;
                         reg1_read_o <=  1'b1;   //  reg is $0
@@ -344,9 +343,18 @@ module id(
                         imm <=  {inst_i[15:0], 16'h0};
                         wd_o    <=  inst_i[20:16];
                         instvalid   <=  `InstValid;
-                    end else begin
-                        // not valid func
-                    end
+                    // if(inst_i[25:21]==5'b00000) begin
+                    //     reg1_o  <=  `WriteEnable;
+                    //     aluop_o <=  `EXE_OR_OP;
+                    //     alusel_o    <=  `EXE_RES_LOGIC;
+                    //     reg1_read_o <=  1'b1;   //  reg is $0
+                    //     reg2_read_o <=  1'b0;
+                    //     imm <=  {inst_i[15:0], 16'h0};
+                    //     wd_o    <=  inst_i[20:16];
+                    //     instvalid   <=  `InstValid;
+                    // end else begin
+                    //     // not valid func
+                    // end
                 end
                 `EXE_ADDI:  begin   // addi
                     wreg_o  <=  `WriteEnable;
@@ -365,6 +373,7 @@ module id(
                     reg1_read_o <=  1'b1;
                     reg2_read_o <=  1'b0;
                     imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o    <=  inst_i[20:16];
                     instvalid   <=  `InstValid;
                 end
                 `EXE_J: begin
@@ -460,6 +469,26 @@ module id(
                     reg2_read_o <=  1'b1;
                     instvalid   <=  `InstValid;
                     alusel_o    <=  `EXE_RES_LOAD_STORE;
+                end
+                `EXE_SLTI:  begin
+                    wreg_o  <=  `WriteEnable;
+                    aluop_o <=  `EXE_SLT_OP;
+                    alusel_o    <=  `EXE_RES_ARITHMETIC;
+                    reg1_read_o <=  1'b1;
+                    reg2_read_o <=  1'b0;
+                    imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o <= inst_i[20:16];
+                    instvalid <= `InstValid;
+                end
+                `EXE_SLTIU: begin
+                    wreg_o <= `WriteEnable;
+                    aluop_o <= `EXE_SLTU_OP;
+                    alusel_o <= `EXE_RES_ARITHMETIC; 
+                    reg1_read_o <= 1'b1;	
+                    reg2_read_o <= 1'b0;	  	
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o <= inst_i[20:16];		  	
+					instvalid <= `InstValid;	
                 end
                 `EXE_SPECIAL2_INST: begin
                     case (op3)
@@ -587,7 +616,6 @@ module id(
                 wd_o    <=  inst_i[15:11];
                 instvalid   <=  `InstValid;
             end 
-
         end
     end // if
 end // always
@@ -606,7 +634,7 @@ end // always
             reg1_o  <= `ZeroWord;
         end else if((pre_inst_is_load == 1'b1) && (ex_wd_i == reg1_addr_o) && (reg1_read_o == 1'b1))    begin
             stallreq_for_reg1_loadrelate    <=  `Stop;
-        end else if((reg1_read_o == 1'b1) && (ex_wreg_i==1) && (ex_wd_i==reg1_addr_o)) begin
+        end else if((reg1_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg1_addr_o)) begin
             reg1_o  <= ex_wdata_i;
         end else if((reg1_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg1_addr_o)) begin
             reg1_o  <= mem_wdata_i;
@@ -631,7 +659,7 @@ end // always
             reg2_o  <= `ZeroWord;
         end else if((pre_inst_is_load == 1'b1) && (ex_wd_i == reg2_addr_o) && (reg2_read_o == 1'b1))    begin
             stallreq_for_reg2_loadrelate    <=  `Stop;
-        end else if((reg2_read_o == 1'b1) && (ex_wreg_i==1) && (ex_wd_i == reg2_addr_o)) begin
+        end else if((reg2_read_o == 1'b1) && (ex_wreg_i == 1'b1) && (ex_wd_i == reg2_addr_o)) begin
             reg2_o  <= ex_wdata_i;
         end else if((reg2_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg2_addr_o)) begin
             reg2_o  <= mem_wdata_i;

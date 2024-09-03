@@ -1,0 +1,10 @@
+(DELAYFILE 
+(SDFVERSION "3.0" )
+(DESIGN "min_sopc")
+(DATE "Tue Sep  3 18:47:16 2024")
+(VENDOR "XILINX")
+(PROGRAM "Vivado")
+(VERSION "2019.2")
+(DIVIDER /)
+(TIMESCALE 1ps)
+)
