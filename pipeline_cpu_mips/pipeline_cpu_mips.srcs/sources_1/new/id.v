@@ -30,7 +30,7 @@ module id(
         input   wire    is_in_delayslot_i,
 
         // load store
-        // input   wire[`AluOpBusWidth - 1:0]  ex_aluop_i,  
+        input   wire[`AluOpBusWidth - 1:0]  ex_aluop_i,  
 
         output  reg next_inst_in_delayslot_o,
         output  reg branch_flag_o,
@@ -82,6 +82,11 @@ module id(
     // pass inst
     assign  inst_o  = inst_i;
 
+    reg stallreq_for_reg1_loadrelate;   // if reg1 has load relate
+    reg stallreq_for_reg2_loadrelate;   //  if reg2 has load relate
+    wire pre_inst_is_load; // if last inst is load inst?
+    assign  pre_inst_is_load = (ex_aluop_i == `EXE_LW_OP) ? 1'b1 : 1'b0;
+    assign stallreq = stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate;
 /*******************
     1. decode inst
 ********************/
@@ -596,8 +601,11 @@ end // always
 // make: reg1_o=ex_wdata_i
 
     always @ (*) begin
+        stallreq_for_reg1_loadrelate    <=  `NotStop;
         if(rst == `RstEnable) begin
             reg1_o  <= `ZeroWord;
+        end else if((pre_inst_is_load == 1'b1) && (ex_wd_i == reg1_addr_o) && (reg1_read_o == 1'b1))    begin
+            stallreq_for_reg1_loadrelate    <=  `Stop;
         end else if((reg1_read_o == 1'b1) && (ex_wreg_i==1) && (ex_wd_i==reg1_addr_o)) begin
             reg1_o  <= ex_wdata_i;
         end else if((reg1_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg1_addr_o)) begin
@@ -618,8 +626,11 @@ end // always
 // case 1: ex
 // case 2: mem
     always @ (*) begin
+        stallreq_for_reg2_loadrelate    <=  `NotStop;
         if (rst == `RstEnable) begin
             reg2_o  <= `ZeroWord;
+        end else if((pre_inst_is_load == 1'b1) && (ex_wd_i == reg2_addr_o) && (reg2_read_o == 1'b1))    begin
+            stallreq_for_reg2_loadrelate    <=  `Stop;
         end else if((reg2_read_o == 1'b1) && (ex_wreg_i==1) && (ex_wd_i == reg2_addr_o)) begin
             reg2_o  <= ex_wdata_i;
         end else if((reg2_read_o == 1'b1) && (mem_wreg_i == 1'b1) && (mem_wd_i == reg2_addr_o)) begin
