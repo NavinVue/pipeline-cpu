@@ -20,6 +20,8 @@ module ctrl(
             stall <=    6'b000111; 
         end else if (stall_from_ex == `Stop) begin
             stall <=    6'b001111;
+        end else    begin
+            stall   <=  6'b000000;
         end
     end
 endmodule

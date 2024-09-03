@@ -37,6 +37,8 @@ module pc_reg(
             end else begin
                 pc <= pc + 4'h4;
             end
+        end else   begin
+            
         end
     end
     

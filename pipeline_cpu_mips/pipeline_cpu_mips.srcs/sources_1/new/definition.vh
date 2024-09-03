@@ -4,8 +4,8 @@
 // coding: gbk
 
 // addr, inst
-`define InstAddrWidth 32 // 指令地址位数（二进制）
-`define InstBusWidth 32 // 指令总线宽度 32 bit
+`define InstAddrWidth 32 // 指锟斤拷锟街肺伙拷锟斤拷锟斤拷锟斤拷锟斤拷疲锟�
+`define InstBusWidth 32 // 指锟斤拷锟斤拷锟竭匡拷锟斤拷 32 bit
 `define InstMemNum  131071 // ROM size 128KB
 `define InstMemNumLog2  17 // log2(InstMemNum)
 
@@ -167,10 +167,10 @@
 
 
 // regs
-`define RegAddrWidth 5 // 32个寄存器, 5位地址
+`define RegAddrWidth 5 // 32锟斤拷锟侥达拷锟斤拷, 5位锟斤拷址
 `define RegBusWidth 32 // Reg bus width, 32-bit
 `define DoubleRegBusWidth   64  // double regbuswidth, specially for mul op
-`define RegNum  32 // 32个Register
+`define RegNum  32 // 32锟斤拷Register
 `define RegNumLog2 5 // log_2(32)=5,log_2(RegNum)
 `define NOPRegAddr 5'b00000
 
