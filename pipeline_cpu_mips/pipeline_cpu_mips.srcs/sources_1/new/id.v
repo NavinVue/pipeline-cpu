@@ -407,7 +407,11 @@ module id(
                     reg1_read_o <=  1'b0;
                     reg2_read_o <=  1'b0;
                     wd_o    <=  5'b11111;   // $31 reg
+<<<<<<< HEAD
                     link_addr_o <=  pc_plus_4;
+=======
+                    link_addr_o <=  pc_plus_4; // fix bug
+>>>>>>> d9634e56ed6628735bd32fbf3f396b56f35b3143
                     branch_flag_o   <=  `Branch;
                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                     instvalid   <=  `InstValid;
