@@ -395,7 +395,7 @@ module id(
                     reg1_read_o <=  1'b0;
                     reg2_read_o <=  1'b0;
                     wd_o    <=  5'b11111;   // $31 reg
-                    link_addr_o <=  pc_plus_8;
+                    link_addr_o <=  pc_plus_4; // fix bug
                     branch_flag_o   <=  `Branch;
                     next_inst_in_delayslot_o    <=  `InDelaySlot;
                     instvalid   <=  `InstValid;
