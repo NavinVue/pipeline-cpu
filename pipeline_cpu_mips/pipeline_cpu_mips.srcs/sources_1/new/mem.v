@@ -24,7 +24,7 @@ module mem (
 
     output  reg[`RegBusWidth - 1 :0]    mem_addr_o,
     output  wire    mem_we_o,
-    output  reg[3 :0]    mem_sel_o,
+    output  reg[3 :0]    mem_sel_o, // if only lw,sw, it's not necessary, but it is convenient to extend later if need
     output  reg[`RegBusWidth - 1 :0]    mem_data_o,
     output  reg mem_ce_o,
 
