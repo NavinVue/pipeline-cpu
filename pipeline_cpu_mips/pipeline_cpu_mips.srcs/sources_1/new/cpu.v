@@ -5,7 +5,7 @@
 // input:
 // output:
 // author:  
-// coding: gbk, ÔÚ¸üÐÂ´úÂëÊ±£¬³öÏÖÁËÂÒÂë...
+// coding: gbk, ï¿½Ú¸ï¿½ï¿½Â´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
 
 module cpu(
         input   wire    clk,
@@ -103,6 +103,9 @@ module cpu(
     wire[`RegBusWidth - 1:0]    mem_reg1_i;
     wire[`RegBusWidth - 1:0]    mem_reg2_i;
 
+    wire J_inst;
+    wire flush_b;
+    wire flush_j;
     // pc_reg instancing
     pc_reg  pc_reg0(
         .clk(clk),  .rst(rst),  .pc(pc),    .ce(rom_ce_o), .stall(stall),
@@ -147,7 +150,10 @@ module cpu(
         .is_in_delayslot_i(is_in_delayslot_i),  .next_inst_in_delayslot_o(next_inst_in_delayslot_o),
         .branch_flag_o(id_branch_flag_o),   .branch_target_address_o(branch_target_address),
         .link_addr_o(id_link_address_o),    .is_in_delayslot_o(id_is_in_delayslot_o),
-        .inst_o(id_inst_o)
+        .inst_o(id_inst_o),
+        .flush_b(flush_b),
+        .flush_j(flush_j),
+        .J_inst(J_inst)
     );
 
     // Regfile instancing
@@ -179,7 +185,9 @@ module cpu(
         .next_inst_in_delayslot_i(next_inst_in_delayslot_o),
         .ex_link_address(ex_link_address_i),    .ex_is_in_delayslot(ex_is_in_delayslot_i),
 		.is_in_delayslot_o(is_in_delayslot_i),
-        .id_inst(id_inst_o)	,   .ex_inst(ex_inst_i)
+        .id_inst(id_inst_o)	,   .ex_inst(ex_inst_i),
+        .branch_flag(id_branch_flag_o), .flush_b(flush_b),
+        .flush_j(flush_j)
     );
 
     // ex instancing
