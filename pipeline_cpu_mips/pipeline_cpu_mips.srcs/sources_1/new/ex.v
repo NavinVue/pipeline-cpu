@@ -208,10 +208,10 @@ module ex(
         end else begin
             case (aluop_i)
                 `EXE_SLL_OP:    begin   // logic left shift
-                    shiftres    <=  reg2_i  <=  reg1_i[4:0]; // imm or regdata, only 4-bit
+                    shiftres    <=  reg2_i  <<  reg1_i[4:0]; // imm or regdata, only 4-bit
                 end
                 `EXE_SRL_OP:    begin   // logic right shift
-                    shiftres    <=  reg2_i  >=  reg1_i[4:0];
+                    shiftres    <=  reg2_i  >>  reg1_i[4:0];
                 end
                 `EXE_SRA_OP:    begin   // arithmetic right shift
                     shiftres    <=  ({32{reg2_i[31]}} << (6'd32-{1'b0,reg1_i[4:0]})) | reg2_i   >> reg1_i[4:0];
