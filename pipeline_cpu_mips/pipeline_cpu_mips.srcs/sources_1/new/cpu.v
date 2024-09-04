@@ -115,7 +115,7 @@ module cpu(
     assign  rom_addr_o  = pc;   // 
 
     // if/id instancing
-    if_id   id_id0(
+    if_id   if_id0(
         .clk(clk),  .rst(rst),  .if_pc(pc),
         .if_inst(rom_data_i),   .id_pc(id_pc_i),
         .id_inst(id_inst_i), .stall(stall)
