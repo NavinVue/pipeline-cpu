@@ -12,7 +12,7 @@ module data_ram(
 	input   wire    ce,
 	input   wire    we,
 	input   wire[`DataAddrBusWidth - 1:0]   addr,
-	input   wire[3:0]   sel,
+	input   wire[3:0]   sel,	// byte choose， actually not use(cause only imply lw,sw)
 	input   wire[`DataBusWidth - 1:0]   data_i,
 	output  reg[`DataBusWidth - 1:0]    data_o
 	
