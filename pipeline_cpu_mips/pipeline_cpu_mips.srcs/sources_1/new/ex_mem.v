@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 
 module ex_mem(
         input   wire    clk,

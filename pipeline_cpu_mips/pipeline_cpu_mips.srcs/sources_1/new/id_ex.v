@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 
 module id_ex(
             input   wire    clk,

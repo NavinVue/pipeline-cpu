@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 // encoding: utf-8
 module ctrl(
         input   wire    rst,

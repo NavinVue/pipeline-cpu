@@ -4,8 +4,8 @@
 // comment: 
 // input:
 // output:
-// author:  
-// coding: gbk, �ڸ��´���ʱ������������...
+// author:  navinvue
+// coding: gbk, ?????????????????????...
 
 module cpu(
         input   wire    clk,

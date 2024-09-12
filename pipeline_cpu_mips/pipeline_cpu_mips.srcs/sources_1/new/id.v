@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 
 module id(
         input   wire    rst,
@@ -131,7 +131,7 @@ module id(
             next_inst_in_delayslot_o    <=  `NotInDelaySlot;
             J_inst  <=  1'b0;
             case (op)
-                `EXE_SPECIAL_INST: begin // inst code is special, ref: ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Ð´CPUï¿½ï¿½ screen-shot https://navinvue.oss-cn-beijing.aliyuncs.com/202409021322157.png
+                `EXE_SPECIAL_INST: begin // inst code is special, ref: ?????????§ÕCPU?? screen-shot https://navinvue.oss-cn-beijing.aliyuncs.com/202409021322157.png
                     case (op2)
                         5'b00000:   begin
                             case(op3)

@@ -1,12 +1,11 @@
 `timescale 1ns / 1ps
-// `include "instruction_define.vh"
 // module name: 
 // comment: 
 // input:
 // output:
-// author:  
-`define RstEnable 1'b1  //澶嶄綅淇″彿鏈夋晥
-`define RstDisable 1'b0 //澶嶄綅淇″彿鏃犳晥
+// author:  navinvue
+`define RstEnable 1'b1  //复位信号有效
+`define RstDisable 1'b0 //复位信号无效
 
 module test_bench(
 

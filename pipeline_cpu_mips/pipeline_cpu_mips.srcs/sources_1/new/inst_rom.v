@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 
 module inst_rom(
         input   wire    ce, // enable sign

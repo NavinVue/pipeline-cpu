@@ -4,7 +4,7 @@
 // comment: 
 // input:
 // output:
-// author:  
+// author:  navinvue
 
 module ex(
         input   rst,
@@ -115,7 +115,7 @@ module ex(
                     `EXE_SUB_OP, `EXE_SUBU_OP: begin
                         arithmeticres   <= result_sum;  // sub
                     end
-                    `EXE_CLZ_OP: begin // manually compute clz... ref: 《自己动手写cpu》
+                    `EXE_CLZ_OP: begin // manually compute clz... ref: ?????????дcpu??
                         arithmeticres   <= reg1_i[31] ? 0 : reg1_i[30] ? 1 : reg1_i[29] ? 2 :
 													 reg1_i[28] ? 3 : reg1_i[27] ? 4 : reg1_i[26] ? 5 :
 													 reg1_i[25] ? 6 : reg1_i[24] ? 7 : reg1_i[23] ? 8 : 

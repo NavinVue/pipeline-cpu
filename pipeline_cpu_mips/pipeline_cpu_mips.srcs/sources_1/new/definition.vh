@@ -4,10 +4,10 @@
 // coding: gbk
 
 // addr, inst
-`define InstAddrWidth 32 // ָ���ַλ���������ƣ�
+`define InstAddrWidth 32 // ָ���ַλ���������ƣ�?
 `define InstBusWidth 32 // ָ�����߿��� 32 bit
-`define InstMemNum  131071 // ROM size 128KB
-`define InstMemNumLog2  17 // log2(InstMemNum)
+`define InstMemNum  1024 // ROM size 128KB
+`define InstMemNumLog2  10 // log2(InstMemNum)
 
 // all kinds of enable and disable
 `define RstEnable   1'b1    // rst sign is able
@@ -177,6 +177,6 @@
 // data_ram
 `define DataAddrBusWidth 32
 `define DataBusWidth 32
-`define DataMemNum 131071
-`define DataMemNumLog2 17
+`define DataMemNum 1024
+`define DataMemNumLog2 10
 `define ByteWidth 8

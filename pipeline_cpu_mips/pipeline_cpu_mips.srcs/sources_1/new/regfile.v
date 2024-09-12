@@ -2,7 +2,7 @@
 `timescale 1ns / 1ps
 // module name: pc_reg 
 // comment: 
-// input: è¾“å…¥ä¸ºclkï¼Œrstä¿¡å·ï¼Œè¾“å‡ºpcï¼ŒèŠ¯ç‰‡ä½¿èƒ½ä¿¡å·
+// input: ÊäÈëÎªclk£¬rstĞÅºÅ£¬Êä³öpc£¬Ğ¾Æ¬Ê¹ÄÜĞÅ??
 // output:  
 // author: navinvue
 // coding: gbk  
@@ -30,6 +30,16 @@ module regfile(
  1. define 32 32-bits registers
 **********************************/
 reg[`RegBusWidth - 1 :0] regs[0:`RegNum - 1];
+integer i;
+    always @(posedge clk or posedge rst) begin
+        if (rst==`RstEnable) begin
+            for (i = 0; i < `RegNum; i = i + 1) begin
+                regs[i] <= {`RegBusWidth{1'b0}}; // init regs
+            end
+        end else begin
+        
+        end
+    end
 /*********************************
  2. write
 **********************************/

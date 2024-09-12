@@ -1,14 +1,14 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  --include "../../../../pipeline_cpu_mips.srcs/sources_1/new" \
+"../../../../pipeline_cpu_mips.srcs/sources_1/ip/data_ram_ip/sim/data_ram_ip.v" \
+"../../../../pipeline_cpu_mips.srcs/sources_1/ip/inst_rom_ip/sim/inst_rom_ip.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/cpu.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/ctrl.v" \
-"../../../../pipeline_cpu_mips.srcs/sources_1/new/data_ram.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/ex.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/ex_mem.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/id.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/id_ex.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/if_id.v" \
-"../../../../pipeline_cpu_mips.srcs/sources_1/new/inst_rom.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/mem.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/mem_wb.v" \
 "../../../../pipeline_cpu_mips.srcs/sources_1/new/min_sopc.v" \
